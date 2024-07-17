@@ -9,6 +9,8 @@ const register = async ({ name, email, password }) => {
   }
   const Hashedpass = await generateHash(password);
   const user = await createUser({ name, email, password: Hashedpass });
+
+  return user;
 };
 
 export default register;

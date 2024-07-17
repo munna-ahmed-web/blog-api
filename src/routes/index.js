@@ -4,6 +4,8 @@ import authController from "../api/v1/auth/index.js";
 import { findSingleItem } from "../api/v1/article/controller/findSingleItem.js";
 import updateOrCreate from "../api/v1/article/controller/updateOrCreate.js";
 import updateItemPatch from "../api/v1/article/controller/updateItemPatch.js";
+import authenticate from "../middleware/authenticate.js";
+import authorize from "../middleware/authorize.js";
 
 const router = Router();
 
@@ -15,13 +17,13 @@ router.route("/api/v1/auth/register").post(authController.register);
 router
   .route("/api/v1/articles")
   .get(articleController.findAll)
-  .post(articleController.create);
+  .post(authenticate, authorize(["user, admin"]), articleController.create);
 
 router
   .route("/api/v1/articles/:id")
   .get(findSingleItem)
-  .put(updateOrCreate)
-  .patch(updateItemPatch)
-  .delete(articleController.removeItem);
+  .put(authenticate, updateOrCreate)
+  .patch(authenticate, updateItemPatch)
+  .delete(authenticate, articleController.removeItem);
 
 export default router;
